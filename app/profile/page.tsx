@@ -1,35 +1,32 @@
-// "use client";
-// import { useEffect, useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+export default function Profile() {
+  const [profile, setProfile] = useState<any>(null);
 
-// export default function Profile() {
-//   const [profile, setProfile] = useState(null);
+  useEffect(() => {
+    fetch("/api/profile", { credentials: "include" }) // proxy to Spring
+      .then(res => {
+        if (!res.ok) throw new Error("not authenticated");
+        return res.json();
+      })
+      .then(setProfile)
+      .catch(() => setProfile(null));
+  }, []);
 
-//   useEffect(() => {
-//     fetch("http://localhost:8080/api/profile", {
-//       credentials: "include"
-//     })
-//       .then((res) => res.json())
-//       .then((data) => setProfile(data));
-//   }, []);
+  if (profile === null) return <div>Loading or not authenticated</div>;
 
-//   if (!profile) return <p>Loading profile...</p>;
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-//       <div className="bg-white p-10 rounded-xl shadow-lg text-center w-96">
-//         <img
-//           src={profile.picture || profile.avatar_url}
-//           alt="Profile"
-//           className="w-28 h-28 rounded-full mx-auto mb-4 shadow"
-//         />
-
-//         <h2 className="text-xl font-bold">{profile.name}</h2>
-//         <p className="text-gray-600">{profile.email}</p>
-
-//         <p className="mt-4 text-gray-800 font-semibold">
-//           Provider: {profile.iss ? "Google" : "GitHub"}
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+        <Image
+          src={profile.picture || profile.avatar_url}
+          alt="avatar"
+          className="w-24 h-24 rounded-full mx-auto mb-3"
+        />
+        <h2 className="text-xl font-semibold">{profile.name || profile.login}</h2>
+        <p className="text-sm text-gray-500">{profile.email}</p>
+      </div>
+    </div>
+  );
+}
