@@ -19,7 +19,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
-        <Image
+        <img
           src={profile.picture || profile.avatar_url}
           alt="avatar"
           className="w-24 h-24 rounded-full mx-auto mb-3"
